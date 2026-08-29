@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+    <meta charset="utf-8">
+    {% load wagtailcore_tags %}
+    <title>
+        {% block title %}{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% endblock %}
+        {% block title_suffix %}{% wagtail_site as current_site %}{% if current_site and current_site.site_name %} - {{ current_site.site_name }}{% endif %}{% endblock %}
+    </title>
+    {% if page.search_description or page.description %}<meta name="description" content="{{ page.search_description|default:page.description }}">{% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="h-full bg-gray-50 font-sans antialiased">
+    <div class="min-h-full">
+        {% include 'components/navigation.html' %}
+        <main>{% block content %}{% endblock %}</main>
+        {% include 'components/footer.html' %}
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% load wagtailcore_tags static %}
+<footer class="bg-gray-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <img src="{% static 'images/logo.svg' %}" alt="AllUnity" class="w-12 h-12 mr-3 rounded-full">
+                    Интегральное сообщество
+                </h3>
+                <p class="text-gray-400">Консолидация всех конструктивных сил на основе принципов интегральной философии.</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Основные разделы</h4>
+                <ul class="space-y-2">
+                    <li><a href="{% slugurl 'codex' %}" class="text-gray-400 hover:text-white">Интегральный кодекс</a></li>
+                    <li><a href="{% slugurl 'institute' %}" class="text-gray-400 hover:text-white">Институт ИИН</a></li>
+                    <li><a href="{% slugurl 'journal' %}" class="text-gray-400 hover:text-white">Журнал</a></li>
+                    <li><a href="{% slugurl 'news' %}" class="text-gray-400 hover:text-white">Новости</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Ресурсы</h4>
+                <ul class="space-y-2">
+                    <li><a href="{% slugurl 'library' %}" class="text-gray-400 hover:text-white">Библиотека</a></li>
+                    <li><a href="{% slugurl 'dictionary' %}" class="text-gray-400 hover:text-white">Словарь</a></li>
+                    <li><a href="{% slugurl 'history' %}" class="text-gray-400 hover:text-white">История</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold mb-4">Контакты</h4>
+                <ul class="space-y-2">
+                    <li class="flex items-center"><i class="fas fa-envelope mr-2 text-indigo-400"></i><a href="mailto:info@allunity.ru" class="text-gray-400 hover:text-white">info@allunity.ru</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>Интегральное сообщество &copy; 2015&ndash;2026</p>
+        </div>
+    </div>
+</footer>

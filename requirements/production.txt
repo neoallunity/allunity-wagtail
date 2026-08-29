@@ -1,0 +1,6 @@
+-r base.txt
+gunicorn
+django-redis
+redis
+django-compressor
+psycopg2-binary

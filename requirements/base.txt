@@ -1,0 +1,4 @@
+Django>=4.2,<5.0
+wagtail>=5.2,<6.0
+django-taggit
+django-extensions

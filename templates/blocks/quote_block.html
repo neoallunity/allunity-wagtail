@@ -1,0 +1,4 @@
+<blockquote class="relative bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500 my-8">
+    <div class="text-lg text-gray-800 italic">"{{ value.quote }}"</div>
+    {% if value.author %}<footer class="mt-4"><cite class="text-gray-600 not-italic">— {{ value.author }}{% if value.source %}, {{ value.source }}{% endif %}</cite></footer>{% endif %}
+</blockquote>

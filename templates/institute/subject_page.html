@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+<div class="bg-white shadow"><div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="flex items-center space-x-3 mb-4">
+        {% if page.subject_code %}<span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded">{{ page.subject_code }}</span>{% endif %}
+        {% if page.difficulty_level %}<span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded">{{ page.get_difficulty_level_display }}</span>{% endif %}
+    </div>
+    <h1 class="text-4xl font-bold text-gray-900 mb-6">{{ page.title }}</h1>
+    {% if page.introduction %}<div class="text-lg text-gray-600">{{ page.introduction|richtext }}</div>{% endif %}
+</div></div>
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    {% if page.curriculum %}<h2 class="text-3xl font-bold text-gray-900 mb-12">Программа курса</h2>
+    <div class="space-y-8">{% for block in page.curriculum %}<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200"><h3 class="text-xl font-semibold text-gray-900">{{ block.value.title }}</h3></div>
+        <div class="p-6"><div class="mb-6">{{ block.value.description|richtext }}</div>
+        {% if block.value.lessons %}<h4 class="text-lg font-semibold text-gray-900 mb-4">Уроки:</h4>
+        <div class="space-y-4">{% for lesson in block.value.lessons %}<div class="border-l-4 border-blue-500 pl-4">
+            <h5 class="font-semibold text-gray-900 mb-2">{{ lesson.lesson_title }}</h5><div class="text-gray-600">{{ lesson.lesson_content|richtext }}</div></div>{% endfor %}</div>{% endif %}
+        </div></div>{% endfor %}</div>{% endif %}
+</div>
+{% endblock %}

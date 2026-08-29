@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+<div class="bg-white shadow"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"><div class="text-center">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
+    {% if page.introduction %}<div class="text-lg text-gray-600 max-w-3xl mx-auto">{{ page.introduction|richtext }}</div>{% endif %}
+</div></div></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for subject in page.get_children.live %}<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1">
+            <div class="p-6"><h3 class="text-xl font-semibold text-gray-900">{{ subject.title }}</h3>
+            {% if subject.search_description %}<p class="text-gray-600 mb-4">{{ subject.search_description }}</p>{% endif %}
+            <a href="{% pageurl subject %}" class="inline-flex items-center text-blue-500 font-medium hover:text-blue-600">Изучать предмет →</a></div>
+        </div>{% empty %}<div class="col-span-full text-center py-16"><p class="text-gray-600 text-lg">Предметы находятся в разработке</p></div>{% endfor %}
+    </div>
+</div>
+{% endblock %}

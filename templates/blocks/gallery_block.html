@@ -1,0 +1,8 @@
+<div class="my-12">{% if value.title %}<h3 class="text-2xl font-bold mb-6 text-center">{{ value.title }}</h3>{% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in value.images %}<div class="group cursor-pointer">
+            {% image item.image width-400 class="w-full h-64 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow" %}
+            {% if item.caption %}<p class="mt-2 text-gray-600 text-sm">{{ item.caption }}</p>{% endif %}
+        </div>{% endfor %}
+    </div>
+</div>

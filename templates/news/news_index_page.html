@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+<div class="bg-white shadow"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"><div class="text-center">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1><p class="text-lg text-gray-600">Последние новости и обновления</p></div></div></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+            {% for news_item in page.get_children.live %}<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+                {% if news_item.specific.featured_image %}<a href="{% pageurl news_item %}">{% image news_item.specific.featured_image width-800 class="w-full h-48 object-cover" %}</a>{% endif %}
+                <div class="p-6"><div class="flex items-center text-sm text-gray-500 mb-3">
+                    <time datetime="{{ news_item.specific.date|date:'Y-m-d' }}">{{ news_item.specific.date|date:'d F Y' }}</time>
+                    {% if news_item.specific.author %}<span class="mx-2">•</span><span>{{ news_item.specific.author }}</span>{% endif %}</div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-3"><a href="{% pageurl news_item %}" class="hover:text-blue-600">{{ news_item.title }}</a></h2>
+                    {% if news_item.search_description %}<p class="text-gray-600 mb-4">{{ news_item.search_description }}</p>{% endif %}
+                    <a href="{% pageurl news_item %}" class="inline-flex items-center text-blue-500 font-medium hover:text-blue-600">Читать далее →</a></div>
+            </article>{% empty %}<div class="text-center py-16"><p class="text-gray-600 text-lg">Новостей пока нет</p></div>{% endfor %}
+        </div>
+        <div class="space-y-8"><div class="bg-white rounded-lg shadow-md p-6"><h3 class="text-lg font-semibold text-gray-900 mb-4">Последние новости</h3>
+            <div class="space-y-3">{% for news_item in page.get_children.live|slice:":5" %}<a href="{% pageurl news_item %}" class="block p-3 rounded hover:bg-gray-50 transition-colors">
+                <h4 class="font-medium text-sm text-gray-900 mb-1">{{ news_item.title }}</h4><time class="text-xs text-gray-500">{{ news_item.specific.date|date:'d.m.Y' }}</time></a>{% endfor %}</div></div></div>
+    </div>
+</div>
+{% endblock %}

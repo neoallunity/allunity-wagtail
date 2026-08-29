@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgres://allunity_user:secure_password@db:5432/allunity_db
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/static_collected
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=allunity_db
+      - POSTGRES_USER=allunity_user
+      - POSTGRES_PASSWORD=secure_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - media_volume:/app/media
+      - static_volume:/app/static_collected
+    depends_on:
+      - web
+volumes:
+  postgres_data:
+  media_volume:
+  static_volume:

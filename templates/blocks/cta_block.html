@@ -1,0 +1,7 @@
+<div class="bg-{{ value.background_color }}-600 text-white py-16 px-4 rounded-lg my-12">
+    <div class="max-w-3xl mx-auto text-center">
+        <h3 class="text-3xl font-bold mb-4">{{ value.title }}</h3>
+        <div class="text-lg mb-8">{{ value.text|richtext }}</div>
+        <a href="{{ value.button_url }}" class="inline-block bg-white text-{{ value.background_color }}-600 px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition-shadow">{{ value.button_text }}</a>
+    </div>
+</div>
