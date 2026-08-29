@@ -14,7 +14,7 @@ class HomePage(BasePage):
     hero_image = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     body = StreamField([
         ("heading", blocks.CharBlock(classname="title")),
-        ("paragraph", blocks.RichTextBlock()),
+        ("paragraph", blocks.TextBlock()),
         ("image", ImageChooserBlock()),
     ], blank=True, use_json_field=True)
 

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+<article class="py-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <p class="text-sm text-gray-500">{{ page.date }}</p>
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
+    {% if page.featured_image %}{% image page.featured_image original class="rounded-xl mb-8" %}{% endif %}
+    {% if page.author %}<p class="text-gray-600 mb-6">Автор: {{ page.author }}</p>{% endif %}
+    <div class="prose max-w-none">
+      {% for block in page.body %}{% include_block block %}{% endfor %}
+    </div>
+  </div>
+</article>
+{% endblock %}

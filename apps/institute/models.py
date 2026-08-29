@@ -1,7 +1,7 @@
 from django.db import models
 from wagtail.models import Page
 from wagtail.fields import RichTextField, StreamField
-from wagtail.admin.panels import FieldPanel, FieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 from apps.core.models import BasePage
@@ -20,10 +20,10 @@ class SubjectPage(BasePage):
     curriculum = StreamField([
         ("module", blocks.StructBlock([
             ("title", blocks.CharBlock(label="Название модуля")),
-            ("description", blocks.RichTextBlock("Описание модуля")),
+            ("description", blocks.TextBlock(label="Описание модуля")),
             ("lessons", blocks.ListBlock(blocks.StructBlock([
                 ("lesson_title", blocks.CharBlock(label="Урок")),
-                ("lesson_content", blocks.RichTextBlock("Содержание")),
+                ("lesson_content", blocks.TextBlock(label="Содержание")),
             ]))),
         ])),
     ], blank=True, use_json_field=True)

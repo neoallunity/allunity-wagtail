@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+<article class="py-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
+    {% if page.featured_image %}{% image page.featured_image original class="rounded-xl mb-8" %}{% endif %}
+    {% if page.summary %}<p class="text-lg text-gray-600 mb-6">{{ page.summary }}</p>{% endif %}
+    {% if page.status %}<span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{{ page.status }}</span>{% endif %}
+    <div class="prose max-w-none mt-8">
+      {% for block in page.body %}{% include_block block %}{% endfor %}
+    </div>
+    {% if page.publications %}
+    <h2 class="text-2xl font-semibold mt-12 mb-4">Публикации</h2>
+    <ul class="space-y-2">
+      {% for pub in page.publications %}
+      <li><a href="{{ pub.value.url }}" class="text-blue-600 hover:underline">{{ pub.value.title }}</a> — {{ pub.value.authors }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}

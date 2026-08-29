@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+{% block content %}
+<section class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
+    {% if page.introduction %}<div class="prose max-w-none mb-10">{{ page.introduction|richtext }}</div>{% endif %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for project in page.get_children.live %}
+      <a href="{% pageurl project %}" class="block p-6 bg-white rounded-xl shadow hover:shadow-lg transition">
+        <h2 class="text-xl font-semibold text-gray-900">{{ project.title }}</h2>
+        {% if project.specific.summary %}<p class="mt-2 text-gray-600">{{ project.specific.summary|truncatewords:20 }}</p>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
