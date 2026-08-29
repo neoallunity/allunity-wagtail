@@ -4,7 +4,8 @@ from apps.home.models import HomePage
 from apps.institute.models import InstituteIndexPage, SubjectPage
 from apps.news.models import NewsIndexPage
 from apps.projects.models import ProjectIndexPage
-from apps.content.models import ManifestPage
+from apps.content.models import ManifestPage, CodexPage, DictionaryPage, SchoolPage, HistoryPage, EmblemPage
+from apps.discussions.models import DiscussionIndexPage, DiscussionPage
 from bs4 import BeautifulSoup
 
 
@@ -23,6 +24,8 @@ class Command(BaseCommand):
         self.create_news()
         self.create_projects()
         self.create_manifest()
+        self.create_discussions()
+        self.create_content_pages()
         self.stdout.write(self.style.SUCCESS("Migration completed."))
 
     def clear_children(self):
@@ -43,9 +46,10 @@ class Command(BaseCommand):
         if existing:
             for k, v in fields.items():
                 setattr(existing.specific, k, v)
+            existing.specific.show_in_menus = True
             existing.specific.save()
             return existing.specific
-        page = model(slug=slug, **fields)
+        page = model(slug=slug, show_in_menus=True, **fields)
         parent.add_child(instance=page)
         return page
 
@@ -58,18 +62,19 @@ class Command(BaseCommand):
             hero_subtitle="Философия, наука и искусство в едином целом",
             body=self.parse_streamfield(self.fetch("https://allunity.ru/index.shtml")),
         )
+        self.home_page = home
         if home and not self.dry_run:
             site, _ = Site.objects.get_or_create(
                 is_default_site=True,
-                defaults={"hostname": "localhost", "port": 80, "root_page": self.root, "site_name": "AllUnity"},
+                defaults={"hostname": "localhost", "port": 80, "root_page": home, "site_name": "AllUnity"},
             )
-            site.root_page = self.root
+            site.root_page = home
             site.save()
 
     def create_institute(self):
         self.stdout.write("Creating Institute...")
         inst = self.upsert(
-            self.root, InstituteIndexPage, "institute",
+            self.home_page, InstituteIndexPage, "institute",
             title="Институт",
             introduction="<p>Образовательные программы AllUnity</p>",
         )
@@ -92,21 +97,37 @@ class Command(BaseCommand):
 
     def create_news(self):
         self.stdout.write("Creating News...")
-        self.upsert(self.root, NewsIndexPage, "news", title="Новости")
+        self.upsert(self.home_page, NewsIndexPage, "news", title="Новости")
 
     def create_projects(self):
         self.stdout.write("Creating Projects...")
-        self.upsert(self.root, ProjectIndexPage, "projects",
+        self.upsert(self.home_page, ProjectIndexPage, "projects",
                     title="Проекты", introduction="<p>Исследовательские проекты AllUnity</p>")
 
     def create_manifest(self):
         self.stdout.write("Creating Manifest...")
         self.upsert(
-            self.root, ManifestPage, "manifest",
+            self.home_page, ManifestPage, "manifest",
             title="Манифест AllUnity",
             introduction="<p>Интегральное видение будущего человечества и планеты.</p>",
             body=self.parse_streamfield(self.fetch("https://allunity.ru/manifest.shtml")),
         )
+
+    def create_discussions(self):
+        self.stdout.write("Creating Discussions...")
+        self.upsert(self.home_page, DiscussionIndexPage, "discussions", title="Дискуссии")
+
+    def create_content_pages(self):
+        self.stdout.write("Creating content pages...")
+        ph = "<p>Раздел наполняется.</p>"
+        self.upsert(self.home_page, CodexPage, "codex",
+                    title="Кодекс", preamble="<p>Этический и поведенческий кодекс сообщества.</p>")
+        self.upsert(self.home_page, DictionaryPage, "dictionary", title="Словарь")
+        self.upsert(self.home_page, SchoolPage, "school",
+                    title="Школа", admission_requirements=ph, curriculum_overview=ph)
+        self.upsert(self.home_page, HistoryPage, "history", title="История")
+        self.upsert(self.home_page, EmblemPage, "emblem",
+                    title="Эмблема", symbolism=ph, history_of_creation=ph, usage_guidelines=ph)
 
     def fetch(self, url):
         try:

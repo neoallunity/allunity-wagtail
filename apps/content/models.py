@@ -71,7 +71,7 @@ class HistoryPage(BasePage):
 
 
 class EmblemPage(BasePage):
-    emblem_image = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, related_name="+")
+    emblem_image = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     symbolism = RichTextField("Символизм эмблемы")
     history_of_creation = RichTextField("История создания")
     usage_guidelines = RichTextField("Правила использования")
