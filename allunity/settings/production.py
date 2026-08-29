@@ -2,11 +2,15 @@ from .base import *  # noqa
 DEBUG = False
 import os
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "allunity.ru,www.allunity.ru").split(",")
+SECRET_KEY = os.environ["SECRET_KEY"]  # required in production; fail fast if absent
 SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_SECONDS = 63072000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = "DENY"
 try:
     import importlib.util as _ilu
