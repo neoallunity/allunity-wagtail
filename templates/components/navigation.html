@@ -1,5 +1,5 @@
 {% load wagtailcore_tags static wagtailimages_tags %}
-<nav class="bg-white shadow-lg border-b border-gray-200" x-data="{ mobileMenuOpen: false }">
+<nav class="bg-white shadow-lg border-b border-gray-200" x-data="{ mobileMenuOpen: false }" aria-label="Основная навигация">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
@@ -16,7 +16,7 @@
                         {{ menuitem.title }}
                     </a>
                 {% endfor %}
-                <form action="{% slugurl 'search' %}" method="get" class="ml-4">
+                <form action="{% slugurl 'search' %}" method="get" class="ml-4" role="search" aria-label="Поиск по сайту">
                     <input type="text" name="q" placeholder="Поиск…"
                            class="w-32 px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
                 </form>

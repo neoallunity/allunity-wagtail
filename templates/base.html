@@ -23,6 +23,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body class="h-full bg-gray-50 font-sans antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded">Перейти к содержимому</a>
     <div class="min-h-full">
         {% include 'components/navigation.html' %}
         {% if page and page.get_ancestors %}
@@ -34,7 +35,7 @@
             </div>
         </nav>
         {% endif %}
-        <main>{% block content %}{% endblock %}</main>
+        <main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
         {% include 'components/footer.html' %}
     </div>
     <script src="{% static 'js/app.js' %}"></script>
