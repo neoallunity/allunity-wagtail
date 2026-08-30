@@ -7,6 +7,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.contrib.sitemaps import views as sitemap_views
 from apps.news.feeds import NewsFeed
+from allunity.views import robots_txt
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -14,16 +15,9 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     path("sitemap.xml", sitemap_views.sitemap),
     path("news/rss/", NewsFeed(), name="news_rss"),
+    path("robots.txt", robots_txt, name="robots_txt"),
     path("", include(wagtail_urls)),
 ]
-
-# robots.txt is optional (django-robots not required)
-try:
-    from django.urls import re_path
-    import robots.views as _rv  # noqa
-    urlpatterns.append(path("robots.txt", _rv.robots_txt, name="robots_txt"))
-except Exception:
-    pass
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
