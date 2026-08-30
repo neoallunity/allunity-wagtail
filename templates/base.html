@@ -25,6 +25,15 @@
 <body class="h-full bg-gray-50 font-sans antialiased">
     <div class="min-h-full">
         {% include 'components/navigation.html' %}
+        {% if page and page.get_ancestors %}
+        <nav aria-label="Хлебные крошки" class="bg-gray-100 border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-sm text-gray-600">
+                <a href="{% slugurl 'home' %}" class="hover:text-blue-600">Главная</a>
+                {% for ancestor in page.get_ancestors %}{% if not ancestor.is_root %}<span class="mx-2 text-gray-400">/</span><a href="{% pageurl ancestor %}" class="hover:text-blue-600">{{ ancestor.title }}</a>{% endif %}{% endfor %}
+                <span class="mx-2 text-gray-400">/</span><span class="text-gray-800">{{ page.title }}</span>
+            </div>
+        </nav>
+        {% endif %}
         <main>{% block content %}{% endblock %}</main>
         {% include 'components/footer.html' %}
     </div>

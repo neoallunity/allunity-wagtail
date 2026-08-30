@@ -4,7 +4,21 @@
 <section class="py-16">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
-    <div class="prose max-w-none">{% for block in page.body %}{% include_block block %}{% endfor %}</div>
+    {% if page.admission_requirements %}<div class="prose max-w-none mb-6 text-gray-700">{{ page.admission_requirements|richtext }}</div>{% endif %}
+    {% if page.curriculum_overview %}<div class="prose max-w-none mb-10 text-gray-700">{{ page.curriculum_overview|richtext }}</div>{% endif %}
+    <h2 class="text-2xl font-semibold text-gray-900 mb-6">Образовательные программы</h2>
+    <div class="space-y-8">
+      {% for program in page.programs %}
+        <article class="p-6 bg-white rounded-xl shadow">
+          <div class="flex justify-between items-baseline">
+            <h3 class="text-xl font-semibold text-gray-900">{{ program.value.name }}</h3>
+            <span class="text-sm text-gray-500">{{ program.value.duration }}</span>
+          </div>
+          <div class="prose max-w-none text-gray-700 mt-2">{{ program.value.description }}</div>
+          {% if program.value.subjects %}<p class="text-sm text-gray-500 mt-2">Предметы: {{ program.value.subjects|join:", " }}</p>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}

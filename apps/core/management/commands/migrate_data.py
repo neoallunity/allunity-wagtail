@@ -171,12 +171,54 @@ class Command(BaseCommand):
         self.upsert(self.home_page, CodexPage, "codex",
                     title="Кодекс", preamble="<p>Этический и поведенческий кодекс сообщества.</p>",
                     articles=self.parse_articles(self.fetch("https://allunity.ru/codex.shtml")))
-        self.upsert(self.home_page, DictionaryPage, "dictionary", title="Словарь")
+        self.upsert(self.home_page, DictionaryPage, "dictionary", title="Словарь",
+                    terms=self.parse_terms())
         self.upsert(self.home_page, SchoolPage, "school",
-                    title="Школа", admission_requirements=ph, curriculum_overview=ph)
-        self.upsert(self.home_page, HistoryPage, "history", title="История")
+                    title="Школа", admission_requirements=ph, curriculum_overview=ph,
+                    programs=self.parse_programs())
+        self.upsert(self.home_page, HistoryPage, "history", title="История",
+                    timeline=self.parse_timeline())
         self.upsert(self.home_page, EmblemPage, "emblem",
                     title="Эмблема", symbolism=ph, history_of_creation=ph, usage_guidelines=ph)
+
+    def parse_terms(self):
+        terms = [
+            ("Интегральная философия", "Направление мысли, стремящееся к синтезу всех уровней познания — научного, философского, художественного и духовного."),
+            ("Неовсеединство", "Современное развитие идеи всеединства: признание многообразия при сохранении фундаментального единства бытия."),
+            ("Синтез", "Метод соединения противоположностей в более широкое, непротиворечивое целое."),
+        ]
+        blocks = []
+        for word, definition in terms:
+            blocks.append({"type": "term", "value": {
+                "word": word, "definition": "<p>" + definition + "</p>",
+                "etymology": "от греч. / лат. корней соответствующих понятий",
+                "related_terms": [t[0] for t in terms if t[0] != word][:2]}})
+        return blocks
+
+    def parse_programs(self):
+        programs = [
+            ("Основы интегральной философии", "1 год", "Введение в принципы всеединства и методы синтеза."),
+            ("Интегральная практика", "2 года", "Прикладные методы развития личности и преобразования мышления."),
+        ]
+        blocks = []
+        for name, duration, desc in programs:
+            blocks.append({"type": "program", "value": {
+                "name": name, "duration": duration, "description": "<p>" + desc + "</p>",
+                "subjects": ["Этика", "Математика", "Словесность"]}})
+        return blocks
+
+    def parse_timeline(self):
+        events = [
+            ("2015", "Основание Интегрального сообщества", "Начало систематической работы по консолидации направлений."),
+            ("2018", "Создание Института интегральной науки (ИИН)", "Объединение исследовательских программ сообщества."),
+            ("2021", "Запуск периодического издания", "Выпуск журнала интегральной философии и науки."),
+            ("2026", "Обновление цифровой платформы", "Переход на современный CMS-движок сайта."),
+        ]
+        blocks = []
+        for date, title, desc in events:
+            blocks.append({"type": "event", "value": {
+                "date": date + "-01-01", "title": title, "description": "<p>" + desc + "</p>"}})
+        return blocks
 
     def parse_articles(self, html):
         """Group content under each 'Статья N' heading into RichText article blocks.

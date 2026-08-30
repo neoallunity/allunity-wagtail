@@ -4,7 +4,18 @@
 <section class="py-16">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ page.title }}</h1>
-    <div class="prose max-w-none">{% for block in page.body %}{% include_block block %}{% endfor %}</div>
+    <div class="space-y-8">
+      {% for term in page.terms %}
+        <article class="p-6 bg-white rounded-xl shadow">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-2">{{ term.value.word }}</h2>
+          <div class="prose max-w-none text-gray-700">{{ term.value.definition }}</div>
+          {% if term.value.etymology %}<p class="text-sm text-gray-500 mt-2">Этимология: {{ term.value.etymology }}</p>{% endif %}
+          {% if term.value.related_terms %}
+          <p class="text-sm text-gray-500 mt-1">См. также: {{ term.value.related_terms|join:", " }}</p>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}

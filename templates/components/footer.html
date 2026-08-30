@@ -12,24 +12,28 @@
             <div>
                 <h4 class="text-lg font-bold mb-4">Основные разделы</h4>
                 <ul class="space-y-2">
+                    <li><a href="{% slugurl 'manifest' %}" class="text-gray-400 hover:text-white">Манифест</a></li>
                     <li><a href="{% slugurl 'codex' %}" class="text-gray-400 hover:text-white">Интегральный кодекс</a></li>
-                    <li><a href="{% slugurl 'institute' %}" class="text-gray-400 hover:text-white">Институт ИИН</a></li>
-                    <li><a href="{% slugurl 'journal' %}" class="text-gray-400 hover:text-white">Журнал</a></li>
+                    <li><a href="{% slugurl 'institute' %}" class="text-gray-400 hover:text-white">Институт</a></li>
                     <li><a href="{% slugurl 'news' %}" class="text-gray-400 hover:text-white">Новости</a></li>
+                    <li><a href="{% slugurl 'projects' %}" class="text-gray-400 hover:text-white">Проекты</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-lg font-bold mb-4">Ресурсы</h4>
                 <ul class="space-y-2">
-                    <li><a href="{% slugurl 'library' %}" class="text-gray-400 hover:text-white">Библиотека</a></li>
                     <li><a href="{% slugurl 'dictionary' %}" class="text-gray-400 hover:text-white">Словарь</a></li>
                     <li><a href="{% slugurl 'history' %}" class="text-gray-400 hover:text-white">История</a></li>
+                    <li><a href="{% slugurl 'school' %}" class="text-gray-400 hover:text-white">Школа</a></li>
+                    <li><a href="{% slugurl 'emblem' %}" class="text-gray-400 hover:text-white">Эмблема</a></li>
+                    <li><a href="{% slugurl 'discussions' %}" class="text-gray-400 hover:text-white">Дискуссии</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="text-lg font-bold mb-4">Контакты</h4>
                 <ul class="space-y-2">
-                    <li class="flex items-center"><i class="fas fa-envelope mr-2 text-indigo-400"></i><a href="mailto:info@allunity.ru" class="text-gray-400 hover:text-white">info@allunity.ru</a></li>
+                    <li class="flex items-center"><a href="mailto:info@allunity.ru" class="text-gray-400 hover:text-white">info@allunity.ru</a></li>
+                    <li><a href="{% slugurl 'search' %}" class="text-gray-400 hover:text-white">Поиск по сайту</a></li>
                 </ul>
             </div>
         </div>
