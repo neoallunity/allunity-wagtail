@@ -22,7 +22,10 @@ class SearchPage(BasePage):
         if query:
             sbackend = get_search_backend()
             results = sbackend.search(query, Page.objects.live().public().specific())
-            Query.get(query).add_hit()
+            try:
+                Query.get(query).add_hit()
+            except Exception:
+                pass
         context["search_query"] = query
         context["search_results"] = results
         return context
