@@ -1,12 +1,13 @@
 from django.core.management.base import BaseCommand
 from wagtail.models import Site, Page
-from apps.home.models import HomePage
+from apps.home.models import HomePage, SearchPage
 from apps.institute.models import InstituteIndexPage, SubjectPage
-from apps.news.models import NewsIndexPage
-from apps.projects.models import ProjectIndexPage
+from apps.news.models import NewsIndexPage, NewsPage
+from apps.projects.models import ProjectIndexPage, ProjectPage
 from apps.content.models import ManifestPage, CodexPage, DictionaryPage, SchoolPage, HistoryPage, EmblemPage
 from apps.discussions.models import DiscussionIndexPage, DiscussionPage
 from bs4 import BeautifulSoup
+from wagtail.rich_text import RichText
 
 
 class Command(BaseCommand):
@@ -23,9 +24,12 @@ class Command(BaseCommand):
         self.create_institute()
         self.create_news()
         self.create_projects()
+        self.seed_news()
+        self.seed_projects()
         self.create_manifest()
         self.create_discussions()
         self.create_content_pages()
+        self.create_search()
         self.stdout.write(self.style.SUCCESS("Migration completed."))
 
     def clear_children(self):
@@ -104,6 +108,45 @@ class Command(BaseCommand):
         self.upsert(self.home_page, ProjectIndexPage, "projects",
                     title="Проекты", introduction="<p>Исследовательские проекты AllUnity</p>")
 
+    def seed_news(self):
+        self.stdout.write("Seeding News entries...")
+        news_index = NewsIndexPage.objects.live().first()
+        if not news_index or self.dry_run:
+            return
+        titles = [
+            "Создан Институт интегральной науки",
+            "Готовится 15-й выпуск журнала",
+            "Обновление сайта сообщества",
+            "Развитие проекта «Математизация философии»",
+        ]
+        for i, title in enumerate(titles):
+            slug = "news-" + str(i + 1)
+            self.upsert(
+                news_index, NewsPage, slug,
+                title=title, author="AllUnity",
+                body=[("paragraph", RichText(f"<p>{title}. Подробности — в официальных каналах сообщества.</p>"))],
+            )
+
+    def seed_projects(self):
+        self.stdout.write("Seeding Project entries...")
+        proj_index = ProjectIndexPage.objects.live().first()
+        if not proj_index or self.dry_run:
+            return
+        projects = [
+            ("Неовсеединство", "active", "Синтез метафизики всеединства и современной науки."),
+            ("Интегралика", "active", "Интегральный подход к образованию и развитию личности."),
+            ("Единое знание", "planning", "Единая система знания across дисциплин."),
+            ("Интегральная медицина", "planning", "Целостный подход к здоровью и практике."),
+            ("Математизация философии", "active", "Формализация философских категорий средствами математики."),
+        ]
+        for i, (name, status, desc) in enumerate(projects):
+            slug = "project-" + str(i + 1)
+            self.upsert(
+                proj_index, ProjectPage, slug,
+                title=name, project_status=status,
+                overview=RichText(f"<p>{desc}</p>"),
+            )
+
     def create_manifest(self):
         self.stdout.write("Creating Manifest...")
         self.upsert(
@@ -112,6 +155,11 @@ class Command(BaseCommand):
             introduction="<p>Интегральное видение будущего человечества и планеты.</p>",
             body=self.parse_streamfield(self.fetch("https://allunity.ru/manifest.shtml")),
         )
+
+    def create_search(self):
+        self.stdout.write("Creating Search page...")
+        self.upsert(self.home_page, SearchPage, "search", title="Поиск",
+                    intro="<p>Поиск по материалам AllUnity.</p>")
 
     def create_discussions(self):
         self.stdout.write("Creating Discussions...")
