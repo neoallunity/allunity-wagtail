@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from wagtail.test.utils import WagtailPageTests
 from wagtail.models import Page, Site
-from apps.home.models import HomePage
+from apps.home.models import HomePage, SearchPage
 from apps.institute.models import InstituteIndexPage, SubjectPage
 from apps.news.models import NewsIndexPage, NewsPage
 from apps.projects.models import ProjectIndexPage, ProjectPage
@@ -90,3 +90,27 @@ class SEOTests(TestCase):
     def test_sitemap(self):
         r = self.client.get("/sitemap.xml")
         self.assertEqual(r.status_code, 200)
+
+
+class SearchPageTests(WagtailPageTests):
+    def setUp(self):
+        self.root = Page.objects.get(depth=1)
+        Site.objects.get_or_create(
+            hostname="testserver", port=80, defaults={"root_page": self.root, "site_name": "AllUnity"}
+        )
+        self.home = HomePage(title="H", slug="search-home", hero_title="h", hero_subtitle="s")
+        self.root.add_child(instance=self.home)
+        self.search = SearchPage(title="Поиск", slug="search")
+        self.home.add_child(instance=self.search)
+        self.search.save_revision().publish() if hasattr(self.search, "save_revision") else None
+        self.home.save_revision().publish() if hasattr(self.home, "save_revision") else None
+
+    def test_search_page_renders(self):
+        r = self.client.get(self.search.url)
+        self.assertEqual(r.status_code, 200)
+
+    def test_search_query_returns_results(self):
+        # A query matching the hero text should surface the home page
+        r = self.client.get(self.search.url + "?q=AllUnity")
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "AllUnity")

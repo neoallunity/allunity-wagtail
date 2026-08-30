@@ -34,3 +34,19 @@ jobs:
           DJANGO_SETTINGS_MODULE: allunity.settings.development
           SECRET_KEY: ci-insecure-key-for-tests-only
         run: python manage.py test apps
+      - name: Content migration is reproducible
+        env:
+          DJANGO_SETTINGS_MODULE: allunity.settings.development
+          SECRET_KEY: ci-insecure-key-for-tests-only
+        run: |
+          python manage.py migrate
+          python manage.py migrate_data
+          python manage.py shell -c "
+          from wagtail.models import Page
+          from apps.news.models import NewsPage
+          from apps.projects.models import ProjectPage
+          assert Page.objects.live().count() >= 15, Page.objects.live().count()
+          assert NewsPage.objects.live().count() == 4
+          assert ProjectPage.objects.live().count() == 5
+          print('migration OK: total', Page.objects.live().count(), '| news', NewsPage.objects.live().count(), '| projects', ProjectPage.objects.live().count())
+          "

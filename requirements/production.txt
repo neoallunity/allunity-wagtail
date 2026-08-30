@@ -4,3 +4,4 @@ django-redis
 redis
 django-compressor
 psycopg2-binary
+dj-database-url

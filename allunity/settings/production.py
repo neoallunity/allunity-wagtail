@@ -12,6 +12,16 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = "DENY"
+
+# Use Postgres when DATABASE_URL is provided (docker-compose); otherwise keep base SQLite.
+_database_url = os.environ.get("DATABASE_URL")
+if _database_url:
+    try:
+        import dj_database_url
+        DATABASES = {"default": dj_database_url.parse(_database_url)}
+    except Exception:
+        pass
+
 try:
     import importlib.util as _ilu
     if _ilu.find_spec("compressor"):

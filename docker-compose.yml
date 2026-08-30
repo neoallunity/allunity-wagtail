@@ -6,7 +6,9 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=False
-      - DATABASE_URL=postgres://allunity_user:secure_password@db:5432/allunity_db
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-prod}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      - DATABASE_URL=postgres://allunity_user:allunity_pass@db:5432/allunity_db
       - REDIS_URL=redis://redis:6379/1
     depends_on:
       - db
@@ -19,7 +21,7 @@ services:
     environment:
       - POSTGRES_DB=allunity_db
       - POSTGRES_USER=allunity_user
-      - POSTGRES_PASSWORD=secure_password
+      - POSTGRES_PASSWORD=allunity_pass
     volumes:
       - postgres_data:/var/lib/postgresql/data
   redis:
