@@ -124,7 +124,7 @@ class Command(BaseCommand):
             self.upsert(
                 news_index, NewsPage, slug,
                 title=title, author="AllUnity",
-                body=[("paragraph", RichText(f"<p>{title}. Подробности — в официальных каналах сообщества.</p>"))],
+                body=[("paragraph", f"<p>{title}. Подробности — в официальных каналах сообщества.</p>")],
             )
 
     def seed_projects(self):
@@ -169,13 +169,39 @@ class Command(BaseCommand):
         self.stdout.write("Creating content pages...")
         ph = "<p>Раздел наполняется.</p>"
         self.upsert(self.home_page, CodexPage, "codex",
-                    title="Кодекс", preamble="<p>Этический и поведенческий кодекс сообщества.</p>")
+                    title="Кодекс", preamble="<p>Этический и поведенческий кодекс сообщества.</p>",
+                    articles=self.parse_articles(self.fetch("https://allunity.ru/codex.shtml")))
         self.upsert(self.home_page, DictionaryPage, "dictionary", title="Словарь")
         self.upsert(self.home_page, SchoolPage, "school",
                     title="Школа", admission_requirements=ph, curriculum_overview=ph)
         self.upsert(self.home_page, HistoryPage, "history", title="История")
         self.upsert(self.home_page, EmblemPage, "emblem",
                     title="Эмблема", symbolism=ph, history_of_creation=ph, usage_guidelines=ph)
+
+    def parse_articles(self, html):
+        """Group content under each 'Статья N' heading into RichText article blocks.
+        Use plain strings (not RichText) — the articles field is a JSON column and
+        Wagtail serializes StreamValue to JSON; RichText objects are not JSON-serializable."""
+        if not html:
+            return []
+        soup = BeautifulSoup(html, "html.parser")
+        blocks = []
+        current = None
+        buf = []
+        for el in soup.find_all(["h2", "h3", "h4", "p"]):
+            txt = el.get_text(strip=True)
+            if el.name in ("h2", "h3", "h4") and "статья" in txt.lower():
+                if current is not None:
+                    blocks.append({"type": "article", "value": {
+                        "title": current, "content": "<p>" + " ".join(buf) + "</p>"}})
+                current = txt
+                buf = []
+            elif current is not None and el.name == "p" and txt:
+                buf.append(txt)
+        if current is not None:
+            blocks.append({"type": "article", "value": {
+                "title": current, "content": "<p>" + " ".join(buf) + "</p>"}})
+        return blocks
 
     def fetch(self, url):
         try:

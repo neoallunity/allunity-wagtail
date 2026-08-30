@@ -18,7 +18,7 @@ class NewsPage(BasePage):
     author = models.CharField("Автор", max_length=100)
     featured_image = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     body = StreamField([
-        ("paragraph", blocks.RichTextBlock()),
+        ("paragraph", blocks.TextBlock()),
         ("image", ImageChooserBlock()),
         ("quote", blocks.BlockQuoteBlock()),
     ], blank=True, use_json_field=True)

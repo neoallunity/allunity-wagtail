@@ -24,7 +24,7 @@ class CodexPage(BasePage):
     articles = StreamField([
         ("article", blocks.StructBlock([
             ("title", blocks.CharBlock(label="Заголовок статьи")),
-            ("content", blocks.RichTextBlock("Содержание статьи")),
+            ("content", blocks.TextBlock(label="Содержание статьи")),
         ])),
     ], blank=True, use_json_field=True)
     content_panels = Page.content_panels + [FieldPanel("preamble"), FieldPanel("articles")]
