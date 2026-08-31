@@ -4,7 +4,7 @@ from apps.home.models import HomePage, SearchPage
 from apps.institute.models import InstituteIndexPage, SubjectPage
 from apps.news.models import NewsIndexPage, NewsPage
 from apps.projects.models import ProjectIndexPage, ProjectPage
-from apps.content.models import ManifestPage, CodexPage, DictionaryPage, SchoolPage, HistoryPage, EmblemPage
+from apps.content.models import ManifestPage, CodexPage, DictionaryPage, SchoolPage, HistoryPage, EmblemPage, JournalPage, LibraryPage
 from apps.discussions.models import DiscussionIndexPage, DiscussionPage
 from bs4 import BeautifulSoup
 from wagtail.rich_text import RichText
@@ -30,6 +30,8 @@ class Command(BaseCommand):
         self.create_manifest()
         self.create_discussions()
         self.create_content_pages()
+        self.create_journal()
+        self.create_library()
         self.create_search()
         self.stdout.write(self.style.SUCCESS("Migration completed."))
 
@@ -166,7 +168,50 @@ class Command(BaseCommand):
 
     def create_discussions(self):
         self.stdout.write("Creating Discussions...")
-        self.upsert(self.home_page, DiscussionIndexPage, "discussions", title="Дискуссии")
+        idx = self.upsert(self.home_page, DiscussionIndexPage, "discussions", title="Дискуссии",
+                          rules="<p>Правила обсуждений сообщества AllUnity.</p>")
+        if not idx or self.dry_run:
+            return
+        threads = [
+            ("Смысл интегрального подхода", "Анна", "<p>Как практический интегральный метод сочетается с повседневными решениями?</p>"),
+            ("Синтез науки и философии", "Борис", "<p>Нужна ли формальная математизация философии для реального диалога?</p>"),
+            ("Методология исследований ИИН", "Мария", "<p>Какие протоколы используются в лабораториях сообщества?</p>"),
+        ]
+        for i, (topic, author, text) in enumerate(threads, 1):
+            self.upsert(idx, DiscussionPage, f"thread-{i}",
+                        title=f"Тред {i}", topic=topic, author=author,
+                        initial_post=text, is_pinned=(i == 1), is_locked=False)
+
+    def create_journal(self):
+        self.stdout.write("Creating Journal...")
+        self.upsert(self.home_page, JournalPage, "journal",
+                    title="Журнал «Интегральная философия»",
+                    volume="№ 15",
+                    publication_date=datetime.date(2024, 6, 1),
+                    description="<p>Периодическое издание сообщества AllUnity.</p>",
+                    articles=[
+                        {"type": "article", "value": {
+                            "title": "Интегральный метод в исследованиях",
+                            "authors": "Иванов А., Петрова Б.",
+                            "abstract": "Методологическая рамка для междисциплинарных работ.",
+                            "url": "https://allunity.ru/journal.shtml",
+                        }},
+                    ])
+
+    def create_library(self):
+        self.stdout.write("Creating Library...")
+        self.upsert(self.home_page, LibraryPage, "library",
+                    title="Библиотека",
+                    description="<p>Ресурсы по интегральной философии и смежным областям.</p>",
+                    resources=[
+                        {"type": "resource", "value": {
+                            "title": "Всеединство: anthology",
+                            "author": "AllUnity",
+                            "resource_type": "Подборка",
+                            "url": "https://allunity.ru/library.shtml",
+                            "description": "Собрание ключевых текстов по теме всеединства.",
+                        }},
+                    ])
 
     def create_content_pages(self):
         self.stdout.write("Creating content pages...")

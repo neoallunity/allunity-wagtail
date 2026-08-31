@@ -79,3 +79,34 @@ class EmblemPage(BasePage):
         FieldPanel("emblem_image"), FieldPanel("symbolism"),
         FieldPanel("history_of_creation"), FieldPanel("usage_guidelines"),
     ]
+
+
+class JournalPage(BasePage):
+    volume = models.CharField("Том/Номер", max_length=50, blank=True)
+    publication_date = models.DateField("Дата издания", null=True, blank=True)
+    description = RichTextField("Описание выпуска", blank=True)
+    articles = StreamField([
+        ("article", blocks.StructBlock([
+            ("title", blocks.CharBlock(label="Название статьи")),
+            ("authors", blocks.CharBlock(label="Авторы", required=False)),
+            ("abstract", blocks.TextBlock(label="Аннотация", required=False)),
+            ("url", blocks.URLBlock(label="Ссылка", required=False)),
+        ])),
+    ], blank=True, use_json_field=True)
+    content_panels = Page.content_panels + [
+        FieldPanel("volume"), FieldPanel("publication_date"), FieldPanel("description"), FieldPanel("articles"),
+    ]
+
+
+class LibraryPage(BasePage):
+    description = RichTextField("О библиотеке", blank=True)
+    resources = StreamField([
+        ("resource", blocks.StructBlock([
+            ("title", blocks.CharBlock(label="Название")),
+            ("author", blocks.CharBlock(label="Автор", required=False)),
+            ("resource_type", blocks.CharBlock(label="Тип", required=False)),
+            ("url", blocks.URLBlock(label="Ссылка", required=False)),
+            ("description", blocks.TextBlock(label="Описание", required=False)),
+        ])),
+    ], blank=True, use_json_field=True)
+    content_panels = Page.content_panels + [FieldPanel("description"), FieldPanel("resources")]
