@@ -1,16 +1,16 @@
 """Production settings for CodeRed Cloud deployment.
 
-CodeRed Cloud injects the following environment variables:
-- DJANGO_SECRET_KEY
-- DJANGO_ALLOWED_HOSTS (comma-separated)
-- DATABASE_URL (e.g. postgres://user:pass@host:5432/db)
+CodeRed Cloud injects the following environment variables at runtime:
+- SECRET_KEY
+- ALLOWED_HOSTS (comma-separated)
+- DATABASE_URL (e.g. mysql://user:pass@host:3306/db)
 - REDIS_URL (optional)
 """
 from .base import *  # noqa
 import os
 
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "allunity.codered.cloud").split(",")
+SECRET_KEY = os.environ["SECRET_KEY"]
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "allunity.codered.cloud").split(",")
 
 # Database (CodeRed provides DATABASE_URL)
 _database_url = os.environ.get("DATABASE_URL")
