@@ -14,12 +14,13 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
     {% load static %}
-    <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
-    <meta property="og:description" content="{{ page.search_description|default:page.description }}">
+    <meta property="og:title" content="{% if page.og_title %}{{ page.og_title }}{% elif page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+    <meta property="og:description" content="{% if page.og_description %}{{ page.og_description }}{% elif page.search_description %}{{ page.search_description }}{% elif page.description %}{{ page.description }}{% endif %}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'favicon/favicon.png' %}">
-    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% if page.social_image %}{{ page.social_image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'favicon/favicon.png' %}{% endif %}">
+    {% if page.robots_noindex or page.robots_nofollow %}<meta name="robots" content="{% if page.robots_noindex %}noindex{% endif %}{% if page.robots_noindex and page.robots_nofollow %}, {% endif %}{% if page.robots_nofollow %}nofollow{% endif %}">{% endif %}
+    <link rel="canonical" href="{% if page.canonical_url %}{{ page.canonical_url }}{% else %}{{ request.build_absolute_uri }}{% endif %}">
     <link rel="icon" type="image/svg+xml" href="{% static 'favicon/favicon.svg' %}">
     <link rel="icon" type="image/png" href="{% static 'favicon/favicon-96x96.png' %}" sizes="96x96">
     <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
