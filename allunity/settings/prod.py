@@ -30,6 +30,14 @@ SECRET_KEY = _secret
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "allunity.codered.cloud").split(",")
 
+# CodeRed serves media from /www/media and static from /www/static_collected.
+import os.path as _osp
+if os.path.exists("/www/media"):
+    MEDIA_ROOT = "/www/media"
+if os.path.exists("/www/static_collected"):
+    STATIC_ROOT = "/www/static_collected"
+WAGTAILADMIN_BASE_URL = os.environ.get("WAGTAILADMIN_BASE_URL", "https://allunity.codered.cloud")
+
 # Database (CodeRed provides DATABASE_URL, e.g. mysql://...)
 _database_url = os.environ.get("DATABASE_URL")
 if _database_url:

@@ -1,0 +1,23 @@
+name: Deploy to CodeRed Cloud
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install CodeRed CLI
+        run: |
+          wget -nv -O /usr/local/bin/cr "https://www.codered.cloud/cli/cr-linux"
+          chmod +x /usr/local/bin/cr
+
+      - name: Deploy to allunity.codered.cloud
+        env:
+          CR_TOKEN: ${{ secrets.CR_TOKEN }}
+        run: cr deploy allunity

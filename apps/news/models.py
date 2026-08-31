@@ -14,8 +14,11 @@ class NewsIndexPage(BasePage):
 
 
 class NewsPage(BasePage):
-    date = models.DateTimeField("Дата публикации", auto_now_add=True)
+    date = models.DateField("Дата публикации", null=True, blank=True,
+        help_text="Дата публикации новости (задаётся вручную).")
     author = models.CharField("Автор", max_length=100)
+    summary = models.CharField("Краткое описание", max_length=300, blank=True,
+        help_text="Отображается в списке новостей и в поиске.")
     featured_image = models.ForeignKey(Image, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     body = StreamField([
         ("paragraph", blocks.TextBlock()),
@@ -23,6 +26,7 @@ class NewsPage(BasePage):
         ("quote", blocks.BlockQuoteBlock()),
     ], blank=True, use_json_field=True)
     content_panels = Page.content_panels + [
-        FieldPanel("author"), FieldPanel("featured_image"), FieldPanel("body"),
+        FieldPanel("date"), FieldPanel("author"), FieldPanel("summary"),
+        FieldPanel("featured_image"), FieldPanel("body"),
     ]
     parent_page_types = ["NewsIndexPage"]

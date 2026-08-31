@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from wagtail.test.utils import WagtailPageTests
 from wagtail.models import Page, Site
+import datetime
 from apps.home.models import HomePage, SearchPage
 from apps.institute.models import InstituteIndexPage, SubjectPage
 from apps.news.models import NewsIndexPage, NewsPage
@@ -50,7 +51,7 @@ class NewsPageTests(WagtailPageTests):
         self.root = Page.objects.get(depth=1)
         self.idx = NewsIndexPage(title="News", slug="test-news")
         self.root.add_child(instance=self.idx)
-        self.np = NewsPage(title="N", slug="test-n", author="A")
+        self.np = NewsPage(title="N", slug="test-n", author="A", date=datetime.date(2024, 5, 1))
         self.idx.add_child(instance=self.np)
 
     def test_news_author(self):

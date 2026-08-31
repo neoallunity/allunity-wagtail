@@ -8,6 +8,7 @@ from apps.content.models import ManifestPage, CodexPage, DictionaryPage, SchoolP
 from apps.discussions.models import DiscussionIndexPage, DiscussionPage
 from bs4 import BeautifulSoup
 from wagtail.rich_text import RichText
+import datetime
 
 
 class Command(BaseCommand):
@@ -124,6 +125,8 @@ class Command(BaseCommand):
             self.upsert(
                 news_index, NewsPage, slug,
                 title=title, author="AllUnity",
+                date=datetime.date(2024, 1, 1 + i),
+                summary=title,
                 body=[("paragraph", f"<p>{title}. Подробности — в официальных каналах сообщества.</p>")],
             )
 
