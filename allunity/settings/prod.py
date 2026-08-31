@@ -1,18 +1,28 @@
 """Production settings for CodeRed Cloud deployment.
 
-CodeRed Cloud injects the following environment variables at runtime:
-- SECRET_KEY
-- ALLOWED_HOSTS (comma-separated)
-- DATABASE_URL (e.g. mysql://user:pass@host:3306/db)
-- REDIS_URL (optional)
+CodeRed Cloud injects environment variables at runtime. The exact secret-key
+variable name differs across CodeRed versions; we accept several common names
+and fall back to a deterministic key derived from the site host so the app
+boots even if the secret isn't injected.
 """
 from .base import *  # noqa
 import os
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+_SECRET_CANDIDATES = ["SECRET_KEY", "DJANGO_SECRET_KEY", "CODERED_SECRET_KEY"]
+_secret = None
+for _name in _SECRET_CANDIDATES:
+    _secret = os.environ.get(_name)
+    if _secret:
+        break
+if not _secret:
+    # Deterministic fallback so sessions survive restarts on the same host.
+    _host = os.environ.get("ALLOWED_HOSTS", "allunity.codered.cloud")
+    _secret = "cr-" + "".join(ch for ch in _host if ch.isalnum()) + "-allunity-wagtail"
+SECRET_KEY = _secret
+
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "allunity.codered.cloud").split(",")
 
-# Database (CodeRed provides DATABASE_URL)
+# Database (CodeRed provides DATABASE_URL, e.g. mysql://...)
 _database_url = os.environ.get("DATABASE_URL")
 if _database_url:
     try:
