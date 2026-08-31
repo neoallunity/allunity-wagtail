@@ -12,10 +12,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
       - name: Install CodeRed CLI
         run: |
           wget -nv -O /usr/local/bin/cr "https://www.codered.cloud/cli/cr-linux"
           chmod +x /usr/local/bin/cr
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Deploy to allunity.codered.cloud
         env:
