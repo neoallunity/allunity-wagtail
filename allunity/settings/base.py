@@ -49,7 +49,6 @@ WAGTAIL_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
-    "wagtail.contrib.modeladmin",
     "wagtail.contrib.table_block",
 ]
 THIRD_PARTY_APPS = ["modelcluster", "taggit"]
