@@ -7,35 +7,29 @@ def ensure_journal_library(apps, schema_editor):
     JournalPage = apps.get_model("content", "JournalPage")
     LibraryPage = apps.get_model("content", "LibraryPage")
 
+    try:
+        root = Page.objects.get(depth=1)
+        home = root.get_children().filter(slug="home").first()
+    except Exception as e:
+        print(f"[ensure_journal_library] tree lookup failed: {e}")
+        return
+    if not home:
+        print("[ensure_journal_library] home not found")
+        return
+
     def upsert(parent, model, slug, **fields):
         existing = parent.get_children().filter(slug=slug).first()
         if existing:
             for k, v in fields.items():
                 setattr(existing.specific, k, v)
             existing.specific.show_in_menus = True
-            with transaction.atomic():
-                existing.specific.save()
+            existing.specific.save()
             return existing.specific
         page = model(slug=slug, show_in_menus=True, **fields)
-        with transaction.atomic():
-            parent.add_child(instance=page)
+        parent.add_child(instance=page)
         return page
 
     with transaction.atomic():
-        try:
-            root = Page.objects.get(depth=1)
-        except Exception as e:
-            print(f"[ensure_journal_library] root missing: {e}")
-            return
-        try:
-            home = root.get_children().filter(slug="home").first()
-        except Exception as e:
-            print(f"[ensure_journal_library] home missing: {e}")
-            return
-        if not home:
-            print("[ensure_journal_library] home not found")
-            return
-
         upsert(home, JournalPage, "journal",
                title="Журнал «Интегральная философия»",
                volume="№ 15",
