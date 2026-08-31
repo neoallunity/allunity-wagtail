@@ -8,6 +8,14 @@ boots even if the secret isn't injected.
 from .base import *  # noqa
 import os
 
+# PyMySQL is a pure-Python MySQL driver (no system libmysqlclient needed).
+# Django's MySQL backend expects the `MySQLdb` module; shim it.
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except Exception:
+    pass
+
 _SECRET_CANDIDATES = ["SECRET_KEY", "DJANGO_SECRET_KEY", "CODERED_SECRET_KEY"]
 _secret = None
 for _name in _SECRET_CANDIDATES:

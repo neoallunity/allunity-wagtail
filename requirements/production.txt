@@ -3,6 +3,6 @@ gunicorn
 django-redis
 redis
 django-compressor
-mysqlclient
+PyMySQL
 dj-database-url
 beautifulsoup4
