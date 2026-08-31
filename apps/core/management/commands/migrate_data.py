@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 from wagtail.models import Site, Page
 from apps.home.models import HomePage, SearchPage
 from apps.institute.models import InstituteIndexPage, SubjectPage
@@ -170,7 +171,7 @@ class Command(BaseCommand):
             existing.specific.show_in_menus = True
             existing.specific.save()
             return existing.specific
-        page = model(slug=slug, show_in_menus=True, **fields)
+        page = model(slug=slug, show_in_menus=True, live=True, first_published_at=timezone.now(), **fields)
         parent.add_child(instance=page)
         return page
 
