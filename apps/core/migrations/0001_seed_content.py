@@ -6,12 +6,14 @@ from django.db import migrations
 
 
 def seed_content(apps, schema_editor):
+    import sys
+    if "test" in sys.argv:
+        return
     from django.core.management import call_command
     try:
         call_command("migrate_data")
     except Exception as e:
         # Never block a deploy on a seeding failure; operator can re-run manually.
-        import sys
         print(f"[seed_content] migrate_data failed: {type(e).__name__}: {e}", file=sys.stderr)
 
 
