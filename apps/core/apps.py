@@ -20,7 +20,7 @@ def ensure_content_pages(sender, **kwargs):
     for model, slug in ((JournalPage, "journal"), (LibraryPage, "library")):
         if not home.get_children().filter(slug=slug).exists():
             try:
-                page = model(slug=slug, title=slug.title() if hasattr(slug, "title") else str(slug).replace("-", " ").title(), show_in_menus=True, live=True)
+                page = model(slug=slug, title="Журнал «Интегральная философия»" if model.__name__ == "JournalPage" else "Библиотека", show_in_menus=True, live=True)
                 home.add_child(instance=page)
             except Exception as e:
                 print(f"[core.apps] failed to create {slug}: {e}")

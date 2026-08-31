@@ -53,7 +53,7 @@ WAGTAIL_APPS = [
 ]
 THIRD_PARTY_APPS = ["modelcluster", "taggit"]
 LOCAL_APPS = [
-    "apps.core",
+    "apps.core.apps.CoreConfig",
     "apps.home",
     "apps.institute",
     "apps.news",
