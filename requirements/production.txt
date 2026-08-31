@@ -3,5 +3,6 @@ gunicorn
 django-redis
 redis
 django-compressor
-psycopg2-binary
+mysqlclient
 dj-database-url
+beautifulsoup4
