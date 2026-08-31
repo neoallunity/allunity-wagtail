@@ -46,26 +46,34 @@ REAL_LIBRARY = {
 
 
 def seed_journal_library(apps, schema_editor):
-    from wagtail.models import Page
+    Page = apps.get_model("wagtailcore", "Page")
     JournalPage = apps.get_model("content", "JournalPage")
     LibraryPage = apps.get_model("content", "LibraryPage")
 
-    root = Page.objects.get(depth=1)
-    home = root.get_children().filter(slug="home").first()
+    try:
+        root = Page.objects.get(depth=1)
+        home = root.get_children().filter(slug="home").first()
+    except Exception as e:
+        print(f"[seed_journal_library] tree lookup failed: {e}")
+        return
     if not home:
+        print("[seed_journal_library] home not found")
         return
 
     def upsert(parent, model, slug, **fields):
-        existing = parent.get_children().filter(slug=slug).first()
-        if existing:
-            for k, v in fields.items():
-                setattr(existing.specific, k, v)
-            existing.specific.show_in_menus = True
-            existing.specific.save()
-            return existing.specific
-        page = model(slug=slug, show_in_menus=True, **fields)
-        parent.add_child(instance=page)
-        return page
+        try:
+            existing = parent.get_children().filter(slug=slug).first()
+            if existing:
+                for k, v in fields.items():
+                    setattr(existing.specific, k, v)
+                existing.specific.show_in_menus = True
+                existing.specific.save()
+                return existing.specific
+            page = model(slug=slug, show_in_menus=True, **fields)
+            parent.add_child(instance=page)
+            return page
+        except Exception as e:
+            print(f"[seed_journal_library] upsert {slug} failed: {type(e).__name__}: {e}")
 
     upsert(home, JournalPage, "journal", **REAL_JOURNAL)
     upsert(home, LibraryPage, "library", **REAL_LIBRARY)
@@ -77,4 +85,4 @@ class Migration(migrations.Migration):
         ("core", "0001_seed_content"),
     ]
 
-    operations = [migrations.RunPython(seed_journal_library)]
+    operations = [migrations.RunPython(seed_journal_library, migrations.RunPython.noop)]
