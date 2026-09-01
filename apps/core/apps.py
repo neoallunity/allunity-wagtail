@@ -38,12 +38,12 @@ def ensure_content_pages(sender, **kwargs):
     except Exception as e:
         print(f"[core.apps] failed to update home: {e}")
     for model, slug in ((JournalPage, "journal"), (LibraryPage, "library")):
-        if not root.get_children().filter(slug=slug).exists():
-            try:
+        try:
+            if not root.get_children().filter(slug=slug).exists():
                 page = model(slug=slug, title="Журнал «Интегральная философия»" if model.__name__ == "JournalPage" else "Библиотека", show_in_menus=True, live=True)
                 root.add_child(instance=page)
-            except Exception as e:
-                print(f"[core.apps] failed to create {slug}: {e}")
+        except Exception as e:
+            print(f"[core.apps] failed to create {slug}: {e}")
 
 
 class CoreConfig(AppConfig):
