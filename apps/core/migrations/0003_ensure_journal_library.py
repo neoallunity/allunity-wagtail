@@ -32,7 +32,7 @@ def ensure_journal_library(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("content", "0005_librarypage_journalpage"),
-        ("core", "0002_update_home_content"),
+        ("core", "0001_seed_content"),
     ]
 
     operations = [migrations.RunPython(ensure_journal_library)]
