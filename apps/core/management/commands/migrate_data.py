@@ -166,11 +166,13 @@ class Command(BaseCommand):
             return None
         existing = parent.get_children().filter(slug=slug).first()
         if existing:
+            specific = existing.specific
             for k, v in fields.items():
-                setattr(existing.specific, k, v)
-            existing.specific.show_in_menus = True
-            existing.specific.save()
-            return existing.specific
+                setattr(specific, k, v)
+            specific.show_in_menus = True
+            # Force save all fields for the specific page
+            specific.save()
+            return specific
         page = model(slug=slug, show_in_menus=True, live=True, first_published_at=timezone.now(), **fields)
         parent.add_child(instance=page)
         return page
