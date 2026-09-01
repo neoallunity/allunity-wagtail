@@ -161,18 +161,21 @@ class Command(BaseCommand):
         self.root.refresh_from_db()
 
     def upsert(self, parent, model, slug, **fields):
-        """Create a page under `parent`; if slug exists under parent, reuse it."""
+        """Create or update a page under `parent` with the given slug."""
         if self.dry_run:
             return None
         existing = parent.get_children().filter(slug=slug).first()
         if existing:
-            specific = existing.specific
+            # Refresh from DB to ensure we have the latest state
+            existing = Page.objects.get(pk=existing.pk)
+            specific = existing.specific.copy()  # Get a mutable copy
             for k, v in fields.items():
                 setattr(specific, k, v)
             specific.show_in_menus = True
-            # Force save all fields for the specific page
             specific.save()
-            return specific
+            # Refresh the page tree and return
+            Page.fix_tree()
+            return Page.objects.get(slug=slug).specific
         page = model(slug=slug, show_in_menus=True, live=True, first_published_at=timezone.now(), **fields)
         parent.add_child(instance=page)
         return page
