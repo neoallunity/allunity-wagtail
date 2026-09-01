@@ -166,16 +166,9 @@ class Command(BaseCommand):
             return None
         existing = parent.get_children().filter(slug=slug).first()
         if existing:
-            # Refresh from DB to ensure we have the latest state
-            existing = Page.objects.get(pk=existing.pk)
-            specific = existing.specific.copy()  # Get a mutable copy
-            for k, v in fields.items():
-                setattr(specific, k, v)
-            specific.show_in_menus = True
-            specific.save()
-            # Refresh the page tree and return
+            # Delete existing page and recreate with new content
+            existing.delete()
             Page.fix_tree()
-            return Page.objects.get(slug=slug).specific
         page = model(slug=slug, show_in_menus=True, live=True, first_published_at=timezone.now(), **fields)
         parent.add_child(instance=page)
         return page
