@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+import sys
 
 
 REAL_HOME_BODY = [
@@ -13,20 +14,22 @@ REAL_HOME_BODY = [
 
 
 def ensure_content_pages(sender, **kwargs):
-    if kwargs.get("plan") and not kwargs.get("run_migrations"):
-        return
+    print("[core.apps] signal fired", file=sys.stderr)
     try:
         from wagtail.models import Page
         from apps.content.models import JournalPage, LibraryPage
         from apps.home.models import HomePage
-    except Exception:
+    except Exception as e:
+        print(f"[core.apps] import failed: {e}", file=sys.stderr)
         return
     try:
         root = Page.objects.get(depth=1)
         home = root.get_children().filter(slug="home").first()
-    except Exception:
+    except Exception as e:
+        print(f"[core.apps] page lookup failed: {e}", file=sys.stderr)
         return
     if not home:
+        print("[core.apps] home page not found", file=sys.stderr)
         return
     try:
         specific = home.specific
@@ -35,15 +38,19 @@ def ensure_content_pages(sender, **kwargs):
             specific.hero_subtitle = "Консолидация всех конструктивных сил на основе принципов интегральной философии"
             specific.body = REAL_HOME_BODY
             specific.save(update_fields=["hero_title", "hero_subtitle", "body"])
+            print("[core.apps] updated home", file=sys.stderr)
+        else:
+            print(f"[core.apps] home is not HomePage: {type(specific)}", file=sys.stderr)
     except Exception as e:
-        print(f"[core.apps] failed to update home: {e}")
+        print(f"[core.apps] failed to update home: {e}", file=sys.stderr)
     for model, slug in ((JournalPage, "journal"), (LibraryPage, "library")):
         try:
             if not root.get_children().filter(slug=slug).exists():
                 page = model(slug=slug, title="Журнал «Интегральная философия»" if model.__name__ == "JournalPage" else "Библиотека", show_in_menus=True, live=True)
                 root.add_child(instance=page)
+                print(f"[core.apps] created {slug}", file=sys.stderr)
         except Exception as e:
-            print(f"[core.apps] failed to create {slug}: {e}")
+            print(f"[core.apps] failed to create {slug}: {e}", file=sys.stderr)
 
 
 class CoreConfig(AppConfig):
