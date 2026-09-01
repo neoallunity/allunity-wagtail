@@ -24,25 +24,24 @@ def ensure_content_pages(sender, **kwargs):
     try:
         root = Page.objects.get(depth=1)
         home = root.get_children().filter(slug="home").first()
-        if not home:
-            return
-        home = home.specific
     except Exception:
         return
-    if not isinstance(home, HomePage):
+    if not home:
         return
     try:
-        home.hero_title = "Интегральное сообщество"
-        home.hero_subtitle = "Консолидация всех конструктивных сил на основе принципов интегральной философии"
-        home.body = REAL_HOME_BODY
-        home.save(update_fields=["hero_title", "hero_subtitle", "body"])
+        specific = home.specific
+        if isinstance(specific, HomePage):
+            specific.hero_title = "Интегральное сообщество"
+            specific.hero_subtitle = "Консолидация всех конструктивных сил на основе принципов интегральной философии"
+            specific.body = REAL_HOME_BODY
+            specific.save(update_fields=["hero_title", "hero_subtitle", "body"])
     except Exception as e:
         print(f"[core.apps] failed to update home: {e}")
     for model, slug in ((JournalPage, "journal"), (LibraryPage, "library")):
-        if not home.get_parent().get_children().filter(slug=slug).exists():
+        if not root.get_children().filter(slug=slug).exists():
             try:
                 page = model(slug=slug, title="Журнал «Интегральная философия»" if model.__name__ == "JournalPage" else "Библиотека", show_in_menus=True, live=True)
-                home.get_parent().add_child(instance=page)
+                root.add_child(instance=page)
             except Exception as e:
                 print(f"[core.apps] failed to create {slug}: {e}")
 
