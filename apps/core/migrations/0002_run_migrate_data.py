@@ -2,12 +2,10 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
-    # This migration replaces orphaned records that exist in the production
-    # database but were removed from the repository in earlier refactors.
-    # Django's `replaces` mechanism automatically marks those DB records
-    # as applied (or removes them) when this migration is applied, resolving
-    # the "Conflicting migrations detected" / MultipleLeafNodes error.
+    # This migration REPLACES the orphaned records that exist in the
+    # production django_migrations table but were removed from the repo.
+    # Django's graph loader uses `replaces` to delete orphaned DB rows
+    # at load time, resolving ConflictingMigrationHistory errors.
     replaces = [
         ("core", "0002_run_migrate_data"),
         ("core", "0002_sync_pages"),
