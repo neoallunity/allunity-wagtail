@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="relative bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#33415b] overflow-hidden">
-  {% if page.hero_image % %}
+  {% if page.hero_image %}
   <div class="absolute inset-0">{% image page.hero_image original class="w-full h-full object-cover opacity-20" %}</div>
   {% endif %}
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
