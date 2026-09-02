@@ -69,6 +69,7 @@ REAL_CONTENT = {
         "volume": "№ 15",
         "publication_date": datetime.date(2024, 6, 1),
         "description": "<p>Научный журнал «Интегральная философия» предоставляет площадку для выражения своих позиций и теоретических разработок участникам Интегрального сообщества.</p>",
+        "source_url": "https://neoallunity.github.io/allunity-zhurnaly",
         "articles": [
             {"type": "article", "value": {"title": "Интегральный метод в исследованиях", "authors": "Иванов А., Петрова Б.", "abstract": "Методологическая рамка для междисциплинарных работ.", "url": "https://allunity.ru/journal.shtml"}},
             {"type": "article", "value": {"title": "Этика развития", "authors": "Сидоров В.", "abstract": "Нравственные основания принципов неовсеединства.", "url": "https://allunity.ru/journal.shtml"}},
@@ -77,6 +78,7 @@ REAL_CONTENT = {
     "library": {
         "title": "Библиотека",
         "description": "<p>Ресурсы по интегральной философии и смежным областям. Научные работы, учебные материалы, периодика.</p>",
+        "source_url": "https://neoallunity.github.io/allunity-diskussii",
         "resources": [
             {"type": "resource", "value": {"title": "Всеединство: anthology", "author": "AllUnity", "resource_type": "Подборка", "url": "https://allunity.ru/library.shtml", "description": "Собрание ключевых текстов по теме всеединства."}},
             {"type": "resource", "value": {"title": "Журнал «Интегральная философия»", "author": "AllUnity", "resource_type": "Журнал", "url": "https://allunity.ru/journal.shtml", "description": "Периодическое издание сообщества."}},
@@ -276,6 +278,7 @@ class Command(BaseCommand):
                     volume=REAL_CONTENT["journal"]["volume"],
                     publication_date=REAL_CONTENT["journal"]["publication_date"],
                     description=REAL_CONTENT["journal"]["description"],
+                    source_url=REAL_CONTENT["journal"].get("source_url", ""),
                     articles=REAL_CONTENT["journal"]["articles"])
 
     def create_library(self):
@@ -283,6 +286,7 @@ class Command(BaseCommand):
         self.upsert(self.home_page, LibraryPage, "library",
                     title=REAL_CONTENT["library"]["title"],
                     description=REAL_CONTENT["library"]["description"],
+                    source_url=REAL_CONTENT["library"].get("source_url", ""),
                     resources=REAL_CONTENT["library"]["resources"])
 
     def create_content_pages(self):

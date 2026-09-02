@@ -85,6 +85,7 @@ class JournalPage(BasePage):
     volume = models.CharField("Том/Номер", max_length=50, blank=True)
     publication_date = models.DateField("Дата издания", null=True, blank=True)
     description = RichTextField("Описание выпуска", blank=True)
+    source_url = models.URLField("Источник", blank=True, default="https://neoallunity.github.io/allunity-zhurnaly")
     articles = StreamField([
         ("article", blocks.StructBlock([
             ("title", blocks.CharBlock(label="Название статьи")),
@@ -94,12 +95,13 @@ class JournalPage(BasePage):
         ])),
     ], blank=True, use_json_field=True)
     content_panels = Page.content_panels + [
-        FieldPanel("volume"), FieldPanel("publication_date"), FieldPanel("description"), FieldPanel("articles"),
+        FieldPanel("volume"), FieldPanel("publication_date"), FieldPanel("description"), FieldPanel("source_url"), FieldPanel("articles"),
     ]
 
 
 class LibraryPage(BasePage):
     description = RichTextField("О библиотеке", blank=True)
+    source_url = models.URLField("Источник", blank=True, default="https://neoallunity.github.io/allunity-diskussii")
     resources = StreamField([
         ("resource", blocks.StructBlock([
             ("title", blocks.CharBlock(label="Название")),
@@ -109,4 +111,4 @@ class LibraryPage(BasePage):
             ("description", blocks.TextBlock(label="Описание", required=False)),
         ])),
     ], blank=True, use_json_field=True)
-    content_panels = Page.content_panels + [FieldPanel("description"), FieldPanel("resources")]
+    content_panels = Page.content_panels + [FieldPanel("description"), FieldPanel("source_url"), FieldPanel("resources")]
