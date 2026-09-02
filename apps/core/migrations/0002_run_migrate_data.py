@@ -8,14 +8,15 @@ def clear_orphaned_migrations(apps, schema_editor):
     CodeRed Cloud's `cr deploy` runs `manage.py migrate`.  The DB may
     contain rows for migration files that were removed from the repo
     during earlier refactors; Django's migrator refuses to continue
-    until those rows are gone.
+    until those rows are gone.  We delete all core migration rows
+    except the two that actually exist in this repository.
     """
     with connection.cursor() as cur:
         cur.execute(
             "DELETE FROM django_migrations "
-            "WHERE app = 'core' AND name IN ("
-            "'0002_sync_pages', '0002_refresh_home', "
-            "'0002_cleanup', '0002_sync_fix', '0003_sync_fix')"
+            "WHERE app = 'core' AND name NOT IN ("
+            "'0001_seed_content', '0002_run_migrate_data'"
+            ")"
         )
         print(
             f"[0002_run_migrate_data] cleared "
