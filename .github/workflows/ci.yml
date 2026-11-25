@@ -19,6 +19,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements/development.txt
           pip install beautifulsoup4
+      - name: Validate template syntax
+        run: python scripts/validate_templates.py
+
       - name: Django system check
         env:
           DJANGO_SETTINGS_MODULE: allunity.settings.development
